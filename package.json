@@ -1,0 +1,51 @@
+{
+  "private": true,
+  "name": "@oasislabs/anycall-demo",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "./lib/cjs/src/index.js",
+  "module": "./lib/esm/src/index.js",
+  "types": "./lib/cjs/src/index.d.ts",
+  "engines": {
+    "node": ">=16",
+    "pnpm": ">=7"
+  },
+  "files": [
+    "contracts",
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "lint:prettier": "prettier --check --plugin-search-dir=. --cache '*.json' 'scripts/**/*.ts' 'contracts/**/*.sol'",
+    "lint:solhint": "solhint 'contracts/**/*.sol'",
+    "lint": "npm-run-all lint:**",
+    "format:prettier": "prettier --write --plugin-search-dir=. --cache '*.json' 'scripts/**/*.ts' 'contracts/**/*.sol'",
+    "format:solhint": "solhint --fix 'contracts/**/*.sol'",
+    "format": "npm-run-all format:**",
+    "build": "hardhat compile",
+    "dev": "hardhat watch compile",
+    "test": "hardhat test",
+    "prepublishOnly": "pnpm build"
+  },
+  "devDependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
+    "@nomiclabs/hardhat-ethers": "^2.2.2",
+    "@oasisprotocol/sapphire-hardhat": "^1.0.3",
+    "@openzeppelin/contracts": "^4.8.1",
+    "@typechain/ethers-v5": "^10.2.0",
+    "@typechain/hardhat": "^6.1.5",
+    "@types/node": "^18.11.18",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.12.6",
+    "hardhat-watcher": "^2.5.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.3",
+    "prettier-plugin-solidity": "1.0.0-beta.24",
+    "solhint": "^3.3.8",
+    "ts-node": "^10.9.1",
+    "typechain": "^8.1.1",
+    "typescript": "^4.9.4"
+  }
+}
