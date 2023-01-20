@@ -21,11 +21,11 @@ async function main(): Promise<void> {
   await anyCallTest.deployed();
   console.log(anyCallTest.address);
 
-  const anyCall = await ethers.getContractAt('CallProxy', anycall);
-  const configAddr = await anyCall.callStatic.config();
-  const config = await ethers.getContractAt('AnyCallConfig', configAddr);
-  const tx = await config.deposit(anyCallTest.address, { value: ethers.utils.parseEther('0.01') });
-  await tx.wait();
+  // const anyCall = await ethers.getContractAt('CallProxy', anycall);
+  // const configAddr = await anyCall.callStatic.config();
+  // const config = await ethers.getContractAt('AnyCallConfig', configAddr);
+  // const tx = await config.deposit(anyCallTest.address, { value: ethers.utils.parseEther('0.01') });
+  // await tx.wait();
 }
 
 main().catch((e) => {

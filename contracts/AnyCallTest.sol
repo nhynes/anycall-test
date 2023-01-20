@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-
 interface CallProxy {
     function anyCall(
         address _to,
@@ -26,7 +24,7 @@ interface CallProxy {
     function executor() external view returns (address executor);
 }
 
-contract AnyCallTest is Ownable {
+contract AnyCallTest {
     event Success();
 
     address public immutable _anycall;
@@ -38,19 +36,19 @@ contract AnyCallTest is Ownable {
         _receiverChain = receiverChain;
     }
 
-    function setReceiver(address receiver) external onlyOwner {
+    function setReceiver(address receiver) external {
         _receiver = receiver;
     }
 
-    function echo() external onlyOwner {
-        CallProxy(_anycall).anyCall(_receiver, "hello", _receiverChain, 2, "");
+    function echo() external payable {
+        CallProxy(_anycall).anyCall{value: msg.value}(_receiver, "hi", _receiverChain, 0, "");
     }
 
     function anyExecute(bytes memory data) external returns (bool success, bytes memory result) {
         // (address from, uint256 fromChainId, ) = CallProxy(_anycall).context();
         // require(from == _receiver && fromChainId == _receiverChain, "wrong context");
         // bytes memory message = abi.decode(data, (bytes));
-        // require(keccak256(message) == keccak256("hello"), "wrong message");
+        // require(keccak256(message) == keccak256("hi"), "wrong message");
         emit Success();
         success = true;
         result = "";
