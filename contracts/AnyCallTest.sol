@@ -25,31 +25,18 @@ interface CallProxy {
 }
 
 contract AnyCallTest {
-    event Success();
+    event Echo(bytes data);
 
-    address public immutable _anycall;
-    uint256 public immutable _receiverChain;
-    address public _receiver;
-
-    constructor(address anycall, uint256 receiverChain) {
-        _anycall = anycall;
-        _receiverChain = receiverChain;
-    }
-
-    function setReceiver(address receiver) external {
-        _receiver = receiver;
-    }
+    /// The AnycallProxy on the Sapphire Testnet.
+    address public constant _anycall = 0x4792C1EcB969B036eb51330c63bD27899A13D84e;
 
     function echo() external payable {
-        CallProxy(_anycall).anyCall{value: msg.value}(_receiver, "hi", _receiverChain, 0, "");
+        // Call this contract via anycall, paying fees inline.
+        CallProxy(_anycall).anyCall{value: msg.value}(address(this), "hi", 0x5aff, 0, "");
     }
 
     function anyExecute(bytes memory data) external returns (bool success, bytes memory result) {
-        // (address from, uint256 fromChainId, ) = CallProxy(_anycall).context();
-        // require(from == _receiver && fromChainId == _receiverChain, "wrong context");
-        // bytes memory message = abi.decode(data, (bytes));
-        // require(keccak256(message) == keccak256("hi"), "wrong message");
-        emit Success();
+        emit Echo(data);
         success = true;
         result = "";
     }
