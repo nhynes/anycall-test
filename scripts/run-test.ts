@@ -2,26 +2,30 @@ import { ethers } from 'hardhat';
 import type { AnycallTest } from '../typechain-types/AnycallTest';
 
 async function main(): Promise<void> {
+  const payOnDest = !!process.env.PAY_ON_DEST;
+
   const AnycallTest = await ethers.getContractFactory('AnycallTest');
+  const anycallTest = (await AnycallTest.deploy(payOnDest)) as AnycallTest;
+  await anycallTest.deployed();
+  console.log('contract:', anycallTest.address);
 
-  let anycallTestAddr = undefined;
-  anycallTestAddr = '0x5eb039771558b1E9aAB30c71c56726c3ACFFb2FD';
-
-  let anycallTest: AnycallTest | undefined;
-  if (anycallTestAddr) {
-    const signer = ethers.provider.getSigner();
-    anycallTest = AnycallTest.connect(signer).attach(anycallTestAddr) as AnycallTest;
+  const fee = ethers.utils.parseEther('0.03');
+  let value = undefined;
+  if (payOnDest) {
+    const anycallAddr = await anycallTest.callStatic.anycallProxy();
+    const anycallProxy = await ethers.getContractAt('IAnycallProxy', anycallAddr);
+    const anycallConfigAddr = await anycallProxy.callStatic.config();
+    const anycallConfig = await ethers.getContractAt('IFeePool', anycallConfigAddr);
+    const tx = await anycallConfig.deposit(anycallTest.address, { value: fee });
+    await tx.wait();
+    console.log('deposit:', tx.hash);
   } else {
-    anycallTest = (await AnycallTest.deploy()) as AnycallTest;
-    await anycallTest.deployed();
-    console.log(anycallTest.address);
+    value = fee;
   }
-
-  const value = ethers.utils.parseEther('0.15');
   await anycallTest.callStatic.echo({ value }); // Preflight the tx.
-  // const tx = await anycallTest.echo({ value }); // Send it.
-  // await tx.wait();
-  // console.log(tx.hash);
+  const tx = await anycallTest.echo({ value }); // Send it.
+  await tx.wait();
+  console.log('echo:', tx.hash);
 }
 
 main().catch((e) => {

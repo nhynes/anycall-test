@@ -22,6 +22,11 @@ const config: HardhatUserConfig = {
       chainId: 11155111,
       accounts,
     },
+    'bsc': {
+      url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+      chainId: 0x61,
+      accounts,
+    },
     'sapphire-testnet': {
       url: 'https://testnet.sapphire.oasis.dev',
       chainId: 0x5aff,
@@ -32,7 +37,7 @@ const config: HardhatUserConfig = {
     version: '0.8.16',
     settings: {
       optimizer: {
-        enabled: true,
+        enabled: false,
         runs: 200,
       },
     },
